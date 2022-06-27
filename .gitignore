@@ -1,0 +1,4 @@
+node_modules
+.env
+psql.txt
+text.txt
