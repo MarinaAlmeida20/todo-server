@@ -15,6 +15,10 @@ const PORT = process.env.PORT;
 
 // ROUTES//
 
+app.get("/", (req, res) => {
+  res.send("it is working!")
+})
+
 // CREATE A TODO
 
 app.post("/todos", async (req, res) => {
