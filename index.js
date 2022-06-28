@@ -1,15 +1,17 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const client = require("./db");
+const pool = require("./db");
 require('dotenv').config()
 
 // middleware
 app.use(cors());
 app.use(express.json()); // req.body
 
+// pool.connect();
 
-const PORT = process.env.PORT || 8080;
+
+const PORT = process.env.PORT;
 
 // ROUTES//
 
@@ -18,7 +20,7 @@ const PORT = process.env.PORT || 8080;
 app.post("/todos", async (req, res) => {
   try {
     const { description } = req.body;
-    const newTodo = await client.query(
+    const newTodo = await pool.query(
       "INSERT INTO todo (description) VALUES($1) RETURNING *",
       [description]
     );
@@ -35,7 +37,7 @@ app.post("/todos", async (req, res) => {
 
 app.get("/todos", async (req, res) => {
   try {
-    const allTodos = await client.query("SELECT * FROM todo ORDER BY todo_id ASC");
+    const allTodos = await pool.query("SELECT * FROM todo ORDER BY todo_id ASC");
 
     res.json(allTodos.rows);
   } catch (err) {
@@ -54,7 +56,7 @@ app.get("/todos/:id", async (req, res) => {
       return res.status(404).json("This is an incorrect entry!");
     }
 
-    const todo = await client.query("SELECT * FROM todo WHERE todo_id=$1", [
+    const todo = await pool.query("SELECT * FROM todo WHERE todo_id=$1", [
       id,
     ]);
 
@@ -77,7 +79,7 @@ app.put("/todos/:id", async (req, res) => {
         return res.status(404).json("This is an incorrect entry!");
       }
 
-    const updateTodo = await client.query(
+    const updateTodo = await pool.query(
       "UPDATE todo SET description = $1 WHERE todo_id = $2",
       [description, id]
     );
@@ -98,7 +100,7 @@ app.delete("/todos/:id", async(req, res) => {
             return res.status(404).json("This is an incorrect entry!");
           }
 
-        const deleteTodo = await client.query("DELETE FROM todo WHERE todo_id=$1", [id]);
+        const deleteTodo = await pool.query("DELETE FROM todo WHERE todo_id=$1", [id]);
 
         res.json(`Todo ${id} was deleted!`)
 

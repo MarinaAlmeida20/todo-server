@@ -1,4 +1,4 @@
-const {Client} = require("pg");
+const {Pool} = require("pg");
 require('dotenv').config()
 
 // const pool = new Pool({
@@ -9,13 +9,11 @@ require('dotenv').config()
 //     database: "perntodo"
 // })
 
-const client = new Client({
+const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     }
 })
 
-client.connect()
-
-module.exports = client;
+module.exports = pool;
