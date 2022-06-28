@@ -11,7 +11,7 @@ app.use(express.json()); // req.body
 // pool.connect();
 
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 9999;
 
 // ROUTES//
 
